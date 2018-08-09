@@ -1,0 +1,22 @@
+{
+  "name": "hapijs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carloscba/hapijs.git"
+  },
+  "author": "carloscba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/carloscba/hapijs/issues"
+  },
+  "homepage": "https://github.com/carloscba/hapijs#readme",
+  "dependencies": {
+    "hapi": "^17.5.3"
+  }
+}
