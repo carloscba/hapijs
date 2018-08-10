@@ -1,119 +1,98 @@
+require('dotenv').config();
+
 module.exports = (Sequelize, db) => {
     const userModel = require('../../models/users')(Sequelize, db);
-    const errorObject = (code, errors, message) => {
-        return {
-            "statusCode": code,
-            "errors": errors,
-            "message": message
-        }
-    }
-    const defaultResponse = {
-        result: '',
-        errors: false,
-        message: ''
-    }
+    const bcrypt = require('bcrypt');
+    const jwt = require('jsonwebtoken')
+
     return {
-
-        async find(req, h) {
-            let res = defaultResponse
-
-            await userModel.findAll().then((response) => {
-                res.result = response;
-            }).catch((error) => {
-                res.message = error.message
-                res.errors = error.message.split(',')
-            });
-
-            if (res.errors) {
-                return h.response(errorObject(400, res.errors, res.message)).code(400)
-            } else {
-                return res.result;
+       async find(req, h) {
+            try {
+                const tokenData = await jwt.verify(req.query.token, process.env.JWT_KEY)
+                const userData = (tokenData.isAdmin) ? await userModel.findAll() : await userModel.findById(tokenData.id)  
+                return userData;
+            } catch (error) {
+                return h.response({
+                    "errors": error.errors,
+                    "message": error.message
+                }).code(400)
             }
         },
 
         async findOne(req, h) {
-            let res = defaultResponse
-
-            await userModel.findById(req.params.id).then((response) => {
-                res.result = response;
-            }).catch((error) => {
-                res.message = error.message
-                res.errors = error.message.split(',')
-            });
-
-            if (res.errors) {
-                return h.response(errorObject(400, res.errors, res.message)).code(400)
-            } else {
-                if(res.result){
-                    res.result.password = null;
-                    return res.result;
-                }else{
-                    return h.response(errorObject(400, ['Item not found'], 'Item not found')).code(400)
+            try {
+                const tokenData = await jwt.verify(req.query.token, process.env.JWT_KEY)
+                const targetId = (tokenData.isAdmin) ? req.params.id : tokenData.id;
+                const userData = await userModel.findById(targetId);
+                if (userData) {
+                    userData.password = null;
                 }
-                
+                return userData
+            } catch (error) {
+                return h.response({
+                    "errors": error.errors,
+                    "message": error.message
+                }).code(400)
             }
         },
 
         async create(req, h) {
-            let res = defaultResponse
-
-            await userModel.create(req.payload).then((response) => {
-                res.result = response;
-            }).catch((error) => {
-                res.message = error.message
-                res.errors = error.message.split(',')
-            });
-
-            if (res.errors) {
-                return h.response(errorObject(400, res.errors, res.message)).code(400)
-            } else {
-                res.result.password = null;
-                return h.response(res.result);
+            try {
+                const encryptedPassword = await bcrypt.hash(req.payload.password, 10)
+                req.payload.password = encryptedPassword;
+                const userData = await userModel.create(req.payload);
+                if (userData) {
+                    userData.password = null;
+                    return response
+                }
+            } catch (error) {
+                return h.response({
+                    "errors": error.errors,
+                    "message": error.message
+                }).code(400)
             }
         },
 
         async update(req, h) {
-            let res = defaultResponse
-
-            await userModel.update(
-                req.payload,
-                {
-                    where: {
-                        id: req.params.id
-                    }
+            try {
+                if (req.payload.password) {
+                    const encryptedPassword = await bcrypt.hash(req.payload.password, 10)
+                    req.payload.password = encryptedPassword;
                 }
-            ).then((response) => {
-                res.result = response;
-            }).catch((error) => {
-                res.message = error.message
-                res.errors = error.message.split(',')
-            });
-
-            if (res.errors) {
-                return h.response(errorObject(400, res.errors, res.message)).code(400)
-            } else {
-                return h.response(res.result);
+                const tokenData = await jwt.verify(req.query.token, process.env.JWT_KEY)
+                const targetId = (tokenData.isAdmin) ? req.params.id : tokenData.id;                
+                const userData = await userModel.update(
+                    req.payload,
+                    {
+                        where: {
+                            id: targetId
+                        }
+                    }
+                )
+                return userData
+            } catch (error) {
+                return h.response({
+                    "errors": error.errors,
+                    "message": error.message
+                }).code(400)
             }
         },
 
         async destroy(req, h) {
-            let res = defaultResponse
-
-            await userModel.destroy({
-                where: {
-                    id: req.params.id
-                }
-            }).then((response) => {
-                res.result = response;
-            }).catch((error) => {
-                res.message = error.message
-                res.errors = error.message.split(',')
-            });
-
-            if (res.errors) {
-                return h.response(errorObject(400, res.errors, res.message)).code(400)
-            } else {
-                return h.response(res.result);
+            try {
+                const tokenData = await jwt.verify(req.query.token, process.env.JWT_KEY)
+                const targetId = (tokenData.isAdmin) ? req.params.id : tokenData.id;                    
+                const userData = await userModel.destroy({
+                    where: {
+                        id: targetId
+                    }
+                })
+                return userData;
+            } catch (error) {
+                return h.response({
+                    "errors": error.errors,
+                    "message": error.message
+                }).code(400)
             }
         },
     }

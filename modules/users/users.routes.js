@@ -5,7 +5,14 @@ module.exports = (Sequelize, db) => {
         {
             path: '/api/users',
             method: 'GET',
-            handler: usersControllers.find
+            handler: usersControllers.find,
+            config: {
+                validate : {
+                    query : Joi.object().keys({
+                        token : Joi.string().required()
+                    }),
+                }
+            }            
         },
         {
             path: '/api/users/{id}',
@@ -15,14 +22,17 @@ module.exports = (Sequelize, db) => {
                 validate : {
                     params : Joi.object().keys({
                         id : Joi.number().required()
-                    })
+                    }),
+                    query : Joi.object().keys({
+                        token : Joi.string().required()
+                    }),
                 }
             }
         },
         {
             path: '/api/users',
             method: 'POST',
-            handler: usersControllers.create,
+            handler: usersControllers.create            
         },
         {
             path: '/api/users/{id}',

@@ -9,13 +9,21 @@ const server = new hapi.Server({
 });
 
 const init = async () => {
-    await server.register([{
-        plugin : require('./modules/users/users.module'),
-        options : {
-            Sequelize,
-            db
-        }
-    }])    
+    await server.register([
+        {
+            plugin: require('./modules/auth/auth.module'),
+            options: {
+                Sequelize,
+                db
+            }
+        },
+        {
+            plugin: require('./modules/users/users.module'),
+            options: {
+                Sequelize,
+                db
+            }
+        }])
     await server.start()
     console.log(`Server runnig at ${server.info.port}`)
 }
