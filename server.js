@@ -8,8 +8,6 @@ const server = new hapi.Server({
     port: '3000'
 });
 
-
-
 const init = async () => {
     await server.register([{
         plugin : require('./modules/users/users.module'),

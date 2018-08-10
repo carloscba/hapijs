@@ -18,7 +18,22 @@ module.exports = (Sequelize, db) => {
                     })
                 }
             }
-        }
+        },
+        {
+            path: '/api/users',
+            method: 'POST',
+            handler: usersControllers.create,
+        },
+        {
+            path: '/api/users/{id}',
+            method: 'PUT',
+            handler: usersControllers.update,
+        }, 
+        {
+            path: '/api/users/{id}',
+            method: 'delete',
+            handler: usersControllers.destroy,
+        },                        
     ]
 }
 
