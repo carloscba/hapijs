@@ -1,5 +1,5 @@
 module.exports = (Sequelize, db) => {
-    const userModel = require('../models/users')(Sequelize, db);
+    const userModel = require('../../models/users')(Sequelize, db);
     return {
         create() {
 

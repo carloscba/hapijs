@@ -1,6 +1,6 @@
 const Joi = require('joi');
 module.exports = (Sequelize, db) => {
-    const usersControllers = require('../controllers/users.controller')(Sequelize, db)
+    const usersControllers = require('./users.controller')(Sequelize, db)
     return [
         {
             path: '/api/users',
