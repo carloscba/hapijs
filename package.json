@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/carloscba/hapijs#readme",
   "dependencies": {
-    "hapi": "^17.5.3"
+    "hapi": "^17.5.3",
+    "joi": "^13.5.2",
+    "pg": "^7.4.3",
+    "sequelize": "^4.38.0"
   }
 }
