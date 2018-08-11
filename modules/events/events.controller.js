@@ -3,15 +3,15 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 
 module.exports = (db) => {
-    const userModel = require('./users.model')(db);
+    const eventsModel = require('./events.model')(db);
 
 
     return {
        async find(req, h) {
             try {
                 const tokenData = await jwt.verify(req.query.token, process.env.JWT_KEY)
-                const userData = (tokenData.isAdmin) ? await userModel.findAll() : await userModel.findById(tokenData.id)  
-                return userData;
+                const eventData = (tokenData.isAdmin) ? await eventsModel.findAll() : await eventsModel.findById(tokenData.id)  
+                return eventData;
             } catch (error) {
                 return h.response({
                     "errors": error.errors,
@@ -24,11 +24,8 @@ module.exports = (db) => {
             try {
                 const tokenData = await jwt.verify(req.query.token, process.env.JWT_KEY)
                 const targetId = (tokenData.isAdmin) ? req.params.id : tokenData.id;
-                const userData = await userModel.findById(targetId);
-                if (userData) {
-                    userData.password = null;
-                }
-                return userData
+                const eventData = await eventsModel.findById(targetId);
+                return eventData
             } catch (error) {
                 return h.response({
                     "errors": error.errors,
@@ -39,12 +36,9 @@ module.exports = (db) => {
 
         async create(req, h) {
             try {
-                const encryptedPassword = await bcrypt.hash(req.payload.password, 10)
-                req.payload.password = encryptedPassword;
-                const userData = await userModel.create(req.payload);
-                if (userData) {
-                    userData.password = null;
-                    return userData
+                const eventData = await eventsModel.create(req.payload);
+                if (eventData) {
+                    return response
                 }
             } catch (error) {
                 return h.response({
@@ -56,13 +50,9 @@ module.exports = (db) => {
 
         async update(req, h) {
             try {
-                if (req.payload.password) {
-                    const encryptedPassword = await bcrypt.hash(req.payload.password, 10)
-                    req.payload.password = encryptedPassword;
-                }
                 const tokenData = await jwt.verify(req.query.token, process.env.JWT_KEY)
                 const targetId = (tokenData.isAdmin) ? req.params.id : tokenData.id;                
-                const userData = await userModel.update(
+                const eventData = await eventsModel.update(
                     req.payload,
                     {
                         where: {
@@ -70,7 +60,7 @@ module.exports = (db) => {
                         }
                     }
                 )
-                return userData
+                return eventData
             } catch (error) {
                 return h.response({
                     "errors": error.errors,
@@ -83,12 +73,12 @@ module.exports = (db) => {
             try {
                 const tokenData = await jwt.verify(req.query.token, process.env.JWT_KEY)
                 const targetId = (tokenData.isAdmin) ? req.params.id : tokenData.id;                    
-                const userData = await userModel.destroy({
+                const eventData = await eventsModel.destroy({
                     where: {
                         id: targetId
                     }
                 })
-                return userData;
+                return eventData;
             } catch (error) {
                 return h.response({
                     "errors": error.errors,
