@@ -4,7 +4,7 @@ const UsersModule = {
     name: 'UserModule',
     version: '1.0.0',
     register: async function (server, options) {
-        server.route(usersRoutes(options.Sequelize, options.db));
+        server.route(usersRoutes(options.db));
     }
 };
 

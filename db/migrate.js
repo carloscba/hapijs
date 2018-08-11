@@ -1,9 +1,7 @@
 const dbConfig = require('./config');
-const Sequelize = require('sequelize')
-
 db = new Sequelize(dbConfig)
 
-const userModel = require('../models/users')(Sequelize, db);
+const userModel = require('../modules/users/users.model')(db);
 
 db.sync({ 
     force: false 

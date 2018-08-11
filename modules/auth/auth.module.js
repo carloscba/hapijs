@@ -4,7 +4,7 @@ const UsersModule = {
     name: 'AuthModule',
     version: '1.0.0',
     register: async function (server, options) {
-        server.route(authRoutes(options.Sequelize, options.db));
+        server.route(authRoutes(options.db));
     }
 };
 

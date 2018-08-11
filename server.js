@@ -13,14 +13,12 @@ const init = async () => {
         {
             plugin: require('./modules/auth/auth.module'),
             options: {
-                Sequelize,
                 db
             }
         },
         {
             plugin: require('./modules/users/users.module'),
             options: {
-                Sequelize,
                 db
             }
         }])

@@ -1,11 +1,9 @@
 require('dotenv').config();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
 
-module.exports = (Sequelize, db) => {
-    const userModel = require('../../models/users')(Sequelize, db);
-    const bcrypt = require('bcrypt');
-    const jwt = require('jsonwebtoken')
-    
-
+module.exports = (db) => {
+    const userModel = require('../users/users.model')(db);
     return {
         async signin(req, h) {
             try {

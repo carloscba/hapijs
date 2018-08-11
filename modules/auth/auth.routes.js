@@ -1,6 +1,6 @@
 const Joi = require('joi');
-module.exports = (Sequelize, db) => {
-    const authControllers = require('./auth.controller')(Sequelize, db)
+module.exports = (db) => {
+    const authControllers = require('./auth.controller')(db)
     return [
         {
             path: '/api/auth/signin',

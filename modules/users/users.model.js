@@ -1,5 +1,5 @@
-module.exports = (Sequelize, db) => {
-
+const Sequelize = require('sequelize');
+module.exports = (db) => {
     return db.define('user', {
         uid: {
             type: Sequelize.STRING,
