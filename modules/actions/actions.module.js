@@ -1,11 +1,11 @@
-const eventsRoutes = require('./actions.routes');
+const actionsRoutes = require('./actions.routes');
 
-const EventsModule = {
-    name: 'EventsModule',
+const ActionsModule = {
+    name: 'ActionsModule',
     version: '1.0.0',
     register: async function (server, options) {
-        server.route(eventsRoutes(options.db));
+        server.route(actionsRoutes(options.db));
     }
 };
 
-module.exports = EventsModule;
+module.exports = ActionsModule;

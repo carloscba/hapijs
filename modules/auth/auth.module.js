@@ -1,6 +1,6 @@
 const authRoutes = require('./auth.routes');
 
-const UsersModule = {
+const AuthModule = {
     name: 'AuthModule',
     version: '1.0.0',
     register: async function (server, options) {
@@ -8,4 +8,4 @@ const UsersModule = {
     }
 };
 
-module.exports = UsersModule;
+module.exports = AuthModule;

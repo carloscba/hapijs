@@ -17,6 +17,12 @@ const init = async () => {
             }
         },
         {
+            plugin: require('./modules/actions/actions.module'),
+            options: {
+                db
+            }
+        },
+        {
             plugin: require('./modules/applications/applications.module'),
             options: {
                 db

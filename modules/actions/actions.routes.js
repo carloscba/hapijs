@@ -1,49 +1,23 @@
 const Joi = require('joi');
 module.exports = (db) => {
-    const eventsControllers = require('./actions.controller')(db)
+    const actionsControllers = require('./actions.controller')(db)
     return [
         {
-            path: '/api/events',
-            method: 'GET',
-            handler: eventsControllers.find,
+            path: '/api/actions',
+            method: 'POST',
+            handler: actionsControllers.create,
             config: {
                 validate : {
+                    payload : Joi.object().keys({
+                        code : Joi.string().required()
+                    }),
                     query : Joi.object().keys({
                         token : Joi.string().required()
                     }),
                 }
             }            
         },
-        {
-            path: '/api/events/{id}',
-            method: 'GET',
-            handler: eventsControllers.findOne,
-            config: {
-                validate : {
-                    params : Joi.object().keys({
-                        id : Joi.number().required()
-                    }),
-                    query : Joi.object().keys({
-                        token : Joi.string().required()
-                    }),
-                }
-            }
-        },
-        {
-            path: '/api/events',
-            method: 'POST',
-            handler: eventsControllers.create            
-        },
-        {
-            path: '/api/events/{id}',
-            method: 'PUT',
-            handler: eventsControllers.update,
-        }, 
-        {
-            path: '/api/events/{id}',
-            method: 'delete',
-            handler: eventsControllers.destroy,
-        },                        
+        
     ]
 }
 

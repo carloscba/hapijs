@@ -53,6 +53,14 @@ module.exports = (db) => {
         secondaryJson : {
             type : Sequelize.JSON,
             allowNull: true
-        }        
+        },
+        userId: {
+            type : Sequelize.INTEGER,
+            allowNull: false, 
+        },
+        eventId: {
+            type : Sequelize.INTEGER,
+            allowNull: false, 
+        },        
     })
 }
