@@ -2,6 +2,14 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 
+function generateToken(userData) {
+    return {
+        id: userData.id,
+        email: userData.email,
+        isAdmin: userData.isAdmin
+    }
+}
+
 module.exports = (db) => {
     const userModel = require('./users.model')(db);
 
@@ -41,10 +49,16 @@ module.exports = (db) => {
             try {
                 const encryptedPassword = await bcrypt.hash(req.payload.password, 10)
                 req.payload.password = encryptedPassword;
-                const userData = await userModel.create(req.payload);
+                let userData = await userModel.create(req.payload);
+                
                 if (userData) {
-                    userData.password = null;
-                    return userData
+                    token = await jwt.sign(generateToken(userData), process.env.JWT_KEY);
+                    userData = {
+                        ...userData.dataValues,
+                        password : null,
+                        token
+                    }
+                    return userData;
                 }
             } catch (error) {
                 return h.response({

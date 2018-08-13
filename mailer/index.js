@@ -31,12 +31,11 @@ async function send(to, subject, htmlContent, emailData = {}){
     try{
         const emailConfig = {
             from: process.env.MAILER_FROM,
-            to: emailData.to,
-            subject: tools.parseContent(subject, emailData),
-            html: tools.parseContent(htmlContent, emailData)
+            to: to,
+            subject: parseContent(subject, emailData),
+            html: parseContent(htmlContent, emailData)
         };
-
-        const sendData = mailgun.messages().send(emailConfig)
+        const sendData = await mailgun.messages().send(emailConfig)
         return true;
 
     }catch(error){

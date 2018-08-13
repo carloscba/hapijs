@@ -52,10 +52,10 @@ module.exports = (db) => {
                 const actionData = await actionsModel.create(dataToSave);
                 if (actionData) {
                     //Send email if emailConfig is present
+                    
                     if(req.payload.emailConfig){
-                        Mailer.send(emailConfig.to, emailConfig.subject)
-                    }else{
-                        res.status(200).json(actionSaved);
+                        const emailConfig = req.payload.emailConfig
+                        Mailer.send(emailConfig.to, emailConfig.subject, emailConfig.html, emailConfig.data);
                     }
 
                     return actionData
