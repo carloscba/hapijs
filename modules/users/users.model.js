@@ -84,5 +84,10 @@ module.exports = (db) => {
             type: Sequelize.STRING,
             allowNull: true,
         },
+        news: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false,
+            allowNull: true,
+        },        
     })
 }

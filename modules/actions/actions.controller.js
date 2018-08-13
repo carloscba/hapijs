@@ -1,32 +1,13 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const moment = require('moment')
+const moment = require('moment');
+const Mailer = require('../../mailer');
+const tools =require('./actions.tools');
 
 module.exports = (db) => {
     const eventsModel = require('../events/events.model')(db);
     const actionsModel = require('./actions.model')(db);
-
-    const validateAction = (event, actions) => {
-        let valid = false
-        if (event.limit === 'unique' && actions.count === 0) {
-            valid = true
-        } else if (event.limit === 'daily') {
-
-            let sameDay = 0;
-            actions.rows.map((item, index) => {
-                isSameDay = moment(item.createdAt).isSame(moment(), 'day')
-                if (isSameDay) {
-                    sameDay++
-                }
-            })
-            valid = (sameDay < event.top)
-
-        } else if (event.limit === 'top' && actions.count < event.top) {
-            valid = true
-        }
-        return valid
-    }
 
     return {
         async create(req, h) {
@@ -50,7 +31,7 @@ module.exports = (db) => {
                     ],
                 })
 
-                const isValid = validateAction(eventData, actionsbyuser);
+                const isValid = tools.validateAction(eventData, actionsbyuser);
                 const pointsToSave = (req.payload.points) ? req.payload.points : eventData.points;
 
                 const dataToSave = {
@@ -70,6 +51,13 @@ module.exports = (db) => {
 
                 const actionData = await actionsModel.create(dataToSave);
                 if (actionData) {
+                    //Send email if emailConfig is present
+                    if(req.payload.emailConfig){
+                        Mailer.send(emailConfig.to, emailConfig.subject)
+                    }else{
+                        res.status(200).json(actionSaved);
+                    }
+
                     return actionData
                 }
             } catch (error) {

@@ -7,12 +7,14 @@ const applicationsModel = require('../modules/applications/applications.model')(
 const usersModel = require('../modules/users/users.model')(db);
 const eventsModel = require('../modules/events/events.model')(db);
 const actionsModel = require('../modules/actions/actions.model')(db);
+const emailsModel = require('../modules/emails/emails.model')(db);
 
 usersModel.hasMany(actionsModel, { as: 'userId' });
 eventsModel.hasMany(actionsModel, { as: 'eventId' });
 
 applicationsModel.hasMany(eventsModel, { as: 'applicationId' });
-//applicationsModel.hasMany(emailModel, { as: 'applicationId2' });
+applicationsModel.hasMany(emailsModel, { as: 'applicationId2' });
+
 
 db.sync({
     force: true

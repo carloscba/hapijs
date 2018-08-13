@@ -5,7 +5,12 @@ db = new Sequelize(dbConfig)
 
 const server = new hapi.Server({
     host: '127.0.0.1',
-    port: '3000'
+    port: '3000',
+    routes: {
+        cors: {
+            origin: ['*']
+        } 
+    }    
 });
 
 const init = async () => {

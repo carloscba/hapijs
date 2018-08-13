@@ -20,15 +20,18 @@ module.exports = (db) => {
                 if (req.payload) {
                     const encryptedPassword = await bcrypt.hash(req.payload.password, 10)
                     req.payload.password = encryptedPassword;
+                    req.payload.isAdmin = false;
                 }
                 //Save user
-                const userData = await userModel.create(req.payload);
+                let userData = await userModel.create(req.payload);
                 //Generate Token to response
                 token = await jwt.sign(generateToken(userData), process.env.JWT_KEY);
-                console.log("token", token)
-                return {
+                userData = {
+                    ...userData.dataValues,
+                    password : null,
                     token
-                };
+                }
+                return userData;
 
             } catch (error) {
                 return h.response({
@@ -41,7 +44,7 @@ module.exports = (db) => {
         async signin(req, h) {
             try {
                 //Find user by email
-                const userData = await userModel.findOne({
+                let userData = await userModel.findOne({
                     where: {
                         email: req.payload.email,
                     }
@@ -51,9 +54,12 @@ module.exports = (db) => {
                     const userValid = await bcrypt.compare(req.payload.password, userData.password)
                     if (userValid) {
                         token = await jwt.sign(generateToken(userData), process.env.JWT_KEY);
-                        return {
+                        userData = {
+                            ...userData.dataValues,
+                            password : null,
                             token
-                        };
+                        }
+                        return userData;
                     } else {
                         return h.response({
                             "errors": ['Invalid Password'],
@@ -76,7 +82,7 @@ module.exports = (db) => {
         async signinemail(req, h) {
             try {
                 //Find user by email
-                const userData = await userModel.findOne({
+                let userData = await userModel.findOne({
                     where: {
                         email: req.payload.email,
                     }
@@ -84,9 +90,12 @@ module.exports = (db) => {
                 if (userData) {
                     //compare saved password and input form
                     token = await jwt.sign(generateToken(userData), process.env.JWT_KEY);
-                    return {
+                    userData = {
+                        ...userData.dataValues,
+                        password : null,
                         token
-                    };
+                    }
+                    return userData;
                 } else {
                     return h.response({
                         "errors": ['Email don\'t exist'],
