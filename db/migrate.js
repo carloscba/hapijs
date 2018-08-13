@@ -17,7 +17,7 @@ applicationsModel.hasMany(emailsModel, { as: 'applicationId2' });
 
 
 db.sync({
-    force: true
+    force: false
 }).then(() => {
     console.log('suceess')
     process.exit(0)

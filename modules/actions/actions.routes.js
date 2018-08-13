@@ -4,6 +4,16 @@ module.exports = (db) => {
     return [
         {
             path: '/api/actions',
+            method: 'GET',
+            handler: actionsControllers.find,
+        },
+        {
+            path: '/api/actions/{code}',
+            method: 'GET',
+            handler: actionsControllers.findCode,
+        },        
+        {
+            path: '/api/actions',
             method: 'POST',
             handler: actionsControllers.create,
             config: {

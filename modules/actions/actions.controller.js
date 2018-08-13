@@ -3,13 +3,52 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const Mailer = require('../../mailer');
-const tools =require('./actions.tools');
+const tools = require('./actions.tools');
 
 module.exports = (db) => {
     const eventsModel = require('../events/events.model')(db);
     const actionsModel = require('./actions.model')(db);
 
     return {
+        async find(req, h) {
+            try {
+                const tokenData = await jwt.verify(req.query.token, process.env.JWT_KEY);
+                const actionsData = actionsModel.findAll({
+                    where: {
+                        userId: tokenData.id
+                    },
+                    order: [
+                        ['createdAt', 'ASC']
+                    ]
+                });
+                return actionsData;
+            } catch (error) {
+                return h.response({
+                    "errors": error.errors,
+                    "message": error.message
+                }).code(400)
+            }
+        },
+        async findCode(req, h) {
+            try {
+                const tokenData = await jwt.verify(req.query.token, process.env.JWT_KEY);
+                const actionsData = actionsModel.findAll({
+                    where: {
+                        userId: tokenData.id,
+                        code: req.params.code
+                    },
+                    order: [
+                        ['createdAt', 'ASC']
+                    ]
+                });
+                return actionsData;
+            } catch (error) {
+                return h.response({
+                    "errors": error.errors,
+                    "message": error.message
+                }).code(400)
+            }
+        },
         async create(req, h) {
             try {
                 const tokenData = await jwt.verify(req.query.token, process.env.JWT_KEY);
@@ -20,15 +59,15 @@ module.exports = (db) => {
                     }
                 });
 
-                const actionsbyuser = await actionsModel.findAndCountAll({
+                const actionsbyuser = await actionsModel.findAll({
                     where: {
                         userId: tokenData.id,
                         eventId: eventData.id,
                         valid: true
                     },
                     order: [
-                        ['createdAt', 'DESC']
-                    ],
+                        ['createdAt', 'ASC']
+                    ]
                 })
 
                 const isValid = tools.validateAction(eventData, actionsbyuser);
@@ -52,8 +91,8 @@ module.exports = (db) => {
                 const actionData = await actionsModel.create(dataToSave);
                 if (actionData) {
                     //Send email if emailConfig is present
-                    
-                    if(req.payload.emailConfig){
+
+                    if (req.payload.emailConfig) {
                         const emailConfig = req.payload.emailConfig
                         Mailer.send(emailConfig.to, emailConfig.subject, emailConfig.html, emailConfig.data);
                     }

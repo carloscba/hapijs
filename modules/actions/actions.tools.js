@@ -1,11 +1,11 @@
 const validateAction = (event, actions) => {
     let valid = false
-    if (event.limit === 'unique' && actions.count === 0) {
+    if (event.limit === 'unique' && actions.length === 0) {
         valid = true
     } else if (event.limit === 'daily') {
 
         let sameDay = 0;
-        actions.rows.map((item, index) => {
+        actions.map((item, index) => {
             isSameDay = moment(item.createdAt).isSame(moment(), 'day')
             if (isSameDay) {
                 sameDay++
@@ -13,7 +13,7 @@ const validateAction = (event, actions) => {
         })
         valid = (sameDay < event.top)
 
-    } else if (event.limit === 'top' && actions.count < event.top) {
+    } else if (event.limit === 'top' && actions.length < event.top) {
         valid = true
     }
     return valid
