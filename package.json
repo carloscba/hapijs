@@ -25,6 +25,7 @@
     "mailgun-js": "^0.20.0",
     "moment": "^2.22.2",
     "pg": "^7.4.3",
+    "prompt-confirm": "^2.0.4",
     "sequelize": "^4.38.0"
   }
 }

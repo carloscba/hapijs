@@ -14,7 +14,7 @@ const mailgun = new Mailgun({
  */
 function parseContent(html, data){
     for(index in data){
-        html = str.replace(new RegExp(`{{${index}}}`, 'g'), data[index]);
+        html = html.replace(new RegExp(`{{${index}}}`, 'g'), data[index]);
     }
     return html
 }
@@ -39,8 +39,19 @@ async function send(to, subject, htmlContent, emailData = {}){
         return true;
 
     }catch(error){
-        return false;
+        return error.message;
     }
 }
 
-module.exports = { send }
+async function sendblock(subject, htmlContent, emailList){
+    emailList.map((item, index)=>{
+        send(item.email, subject, htmlContent, {
+            name : item.name
+        })
+    })
+}
+
+module.exports = { 
+    send, 
+    sendblock 
+}

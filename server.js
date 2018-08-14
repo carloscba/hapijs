@@ -8,7 +8,10 @@ const server = new hapi.Server({
     port: '3000',
     routes: {
         cors: {
-            origin: ['https://*.ngrok.io']
+            origin: [
+                '*',
+                'https://*.ngrok.io'
+            ]
         } 
     }    
 });
