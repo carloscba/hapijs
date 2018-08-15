@@ -1,16 +1,18 @@
-//const Mailer = require('../mailer')
+const Mailer = require('../mailer')
 const Confirm = require('prompt-confirm');
 const reminderAR = require('./data/htmls/reminder.ar')
 const reminderBR = require('./data/htmls/reminder.br')
 const reminderCO = require('./data/htmls/reminder.co')
 const reminderPA = require('./data/htmls/reminder.pa')
-const userList = require('./data/list/inactivosTest')
+const Entities = require('html-entities').AllHtmlEntities;
+const entities = new Entities();
+//const userList = require('./data/list/inactivos')
 
 subject = {
-    "AR": " ¡{{name}} aún tienes fotos por subir! ¡Apresúrate!",
-    "BR": " {{name}} você ainda tem fotos para subir! Apresse-se!",
-    "PA": " ¡{{name}} aún tienes fotos por subir! ¡Apresúrate!",
-    "CO": " ¡{{name}} aún tienes fotos por subir! ¡Apresúrate!",
+    "AR": " ¡%recipient_name% aún tienes fotos por subir! ¡Apresúrate!",
+    "BR": " %recipient_name% você ainda tem fotos para subir! Apresse-se!",
+    "PA": " ¡%recipient_name% aún tienes fotos por subir! ¡Apresúrate!",
+    "CO": " ¡%recipient_name% aún tienes fotos por subir! ¡Apresúrate!",
 }
 
 html = {
@@ -20,27 +22,20 @@ html = {
     "CO": reminderCO
 }
 
-sender = (userList) => {
-    userList.map(async (user, index) => {
-        /*
-        const sending = await Mailer.send(user.email, subject[user.country], html[user.country], {
-            name: user.firstname
-        })
-        */
-        console.log(user.email, user.firstname, user.country)
-        /*
-        console.log({
-            send: user.name,
-            status: sending
-        })
-        */
-    })
+sender = async () => {
+    //userList.map(async (user, index) => {
+        
+        const sending = await Mailer.send('test-reminder@copaairlines.m8agency.com', subject['AR'], entities.decode(html['AR']), {})
+        
+        console.log('sending', sending)
+        
+    //})
 }
 
-const confirm = new Confirm(`Do you send email to ${userList.RECORDS.length} users`).ask( (answer) => {
+const confirm = new Confirm(`Do you send email to list test-reminder@copaairlines.m8agency.com`).ask( (answer) => {
     if(answer){
         console.log('sending');
-        sender(userList.RECORDS);
+        sender();
     }else{
         console.log('error');        
     }

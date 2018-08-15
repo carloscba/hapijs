@@ -20,6 +20,7 @@
     "bcrypt": "^3.0.0",
     "dotenv": "^6.0.0",
     "hapi": "^17.5.3",
+    "html-entities": "^1.2.1",
     "joi": "^13.5.2",
     "jsonwebtoken": "^8.3.0",
     "mailgun-js": "^0.20.0",
