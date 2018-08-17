@@ -8,31 +8,41 @@ const Entities = require('html-entities').AllHtmlEntities;
 const entities = new Entities();
 //const userList = require('./data/list/inactivos')
 
+to = {
+    "AR": "",
+    "BR": "",
+    "CO": "",
+    "PA": ""
+}
+
 subject = {
-    "AR": " ¡%recipient_name% aún tienes fotos por subir! ¡Apresúrate!",
-    "BR": " %recipient_name% você ainda tem fotos para subir! Apresse-se!",
-    "PA": " ¡%recipient_name% aún tienes fotos por subir! ¡Apresúrate!",
-    "CO": " ¡%recipient_name% aún tienes fotos por subir! ¡Apresúrate!",
+    "AR": "",
+    "BR": "",
+    "CO": "",
+    "PA": ""
 }
 
 html = {
     "AR": reminderAR,
     "BR": reminderBR,
-    "PA": reminderPA,
-    "CO": reminderCO
+    "CO": reminderCO,
+    "PA": reminderPA
+}
+
+const countryTarget = 'PA'
+
+const emailConfig = {
+    to      : to[countryTarget],
+    subject : subject[countryTarget],
+    content : entities.decode(html[countryTarget])
 }
 
 sender = async () => {
-    //userList.map(async (user, index) => {
-        
-        const sending = await Mailer.send('test-reminder@copaairlines.m8agency.com', subject['AR'], entities.decode(html['AR']), {})
-        
+        const sending = await Mailer.send(emailConfig.to, emailConfig.subject, emailConfig.content, {})
         console.log('sending', sending)
-        
-    //})
 }
 
-const confirm = new Confirm(`Do you send email to list test-reminder@copaairlines.m8agency.com`).ask( (answer) => {
+const confirm = new Confirm(`Do you send email to list ${emailConfig.to}`).ask( (answer) => {
     if(answer){
         console.log('sending');
         sender();

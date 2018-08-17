@@ -36,7 +36,7 @@ async function send(to, subject, htmlContent, emailData = {}){
             html: parseContent(htmlContent, emailData)
         };
         const sendData = await mailgun.messages().send(emailConfig)
-        return true;
+        return sendData;
 
     }catch(error){
         return error.message;
